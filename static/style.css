@@ -1,0 +1,466 @@
+@charset "UTF-8";
+/* ===================================================================
+   SKEDA NETWORK — tema hielo, barra de navegación superior fija.
+   El logo y la IP solo aparecen en la portada (index.html).
+=================================================================== */
+*, ::before, ::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Boton comprar de tienda.html */
+button {
+	font: inherit;
+	background: none;
+	color: inherit;
+	border: none;
+	appearance: none;
+	-webkit-appearance: none;
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+button.mc-button .title {
+	padding-top: .6em;
+}
+
+@font-face {
+	font-family: 'Minecraftia';
+	src: url('assets/fonts/Minecraftia.ttf') format('truetype'),
+		 url('assets/fonts/Minecraftia.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	/* --- Paleta hielo --- */
+	--ice-deep:      #071b2e;
+	--ice-mid:       #0f3454;
+	--ice-primary:   #4FC3F7;
+	--ice-light:     #B3E5FC;
+	--ice-frost:     #E8F7FF;
+	--ice-accent:    #7BE0FF;
+	--ice-shadow:    #010c16;
+
+	--font-pixel: 'Minecraftia', monospace;
+	--navbar-h: 56px;
+}
+
+/* ================================================================
+   SCROLLBAR GENERAL — SKEDA MINECRAFT ICE
+   ================================================================ */
+
+::-webkit-scrollbar {
+    width: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--ice-shadow);
+    border-left: 2px solid var(--ice-mid);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        #4f9dcc 0%,
+        #1c4f78 50%,
+        #123a5c 100%
+    );
+
+    border: 2px solid var(--ice-primary);
+
+    box-shadow:
+        inset 2px 2px 0 rgba(255,255,255,.30),
+        inset -2px -2px 0 rgba(0,0,0,.55),
+        2px 0 0 var(--ice-shadow);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        180deg,
+        #7be0ff 0%,
+        #2b6f9e 50%,
+        #17496d 100%
+    );
+
+    border-color: var(--ice-accent);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #1c4f78;
+    border-color: #ffffff;
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--ice-shadow);
+}
+
+/* Firefox */
+html {
+    scrollbar-width: auto;
+    scrollbar-color: var(--ice-primary) var(--ice-shadow);
+}
+
+html {
+	font: 12pt var(--font-pixel), sans-serif;
+	scroll-behavior: smooth;
+	line-height: 1.6; /* Minecraftia tiene poco espacio bajo la línea base, así queda centrada */
+}
+
+body {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background:
+		radial-gradient(ellipse at top, rgba(79, 195, 247, 0.12), transparent 60%),
+		linear-gradient(180deg, var(--ice-deep) 0%, #0a2740 60%, var(--ice-deep) 100%);
+	color: var(--ice-frost);
+	position: relative;
+	overflow-x: hidden;
+}
+
+/* Copos de nieve decorativos y sutiles, no invasivos */
+.snowfall { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.snowfall span {
+	position: absolute;
+	top: -10px;
+	width: 4px; height: 4px;
+	background: var(--ice-light);
+	opacity: .55;
+	image-rendering: pixelated;
+	animation: fall linear infinite;
+}
+@keyframes fall {
+	to { transform: translateY(110vh); }
+}
+
+/* ===================== BARRA DE NAVEGACION (arriba, fija) ===================== */
+.mc-menu {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	width: 100%;
+	min-height: var(--navbar-h);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 10px 16px;
+	background: linear-gradient(180deg, #123a5c 0%, #0a2740 100%);
+	border-bottom: 4px solid var(--ice-primary);
+	box-shadow:
+		inset 0 3px 0 0 rgba(255,255,255,.1),
+		0 4px 0 0 var(--ice-shadow);
+}
+
+/* ===================== BOTON ESTILO MINECRAFT (HIELO) ===================== */
+.mc-button {
+	height: 30pt;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	user-select: none;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	color: inherit;
+	padding: 0 18px;
+
+	background: linear-gradient(180deg, #1c4f78 0%, #123a5c 100%);
+	border: 2px solid var(--ice-primary);
+	box-shadow:
+		inset 3px 3px 0 0 rgba(255,255,255,.25),
+		inset -3px -3px 0 0 rgba(0,0,0,.45),
+		4px 4px 0 0 var(--ice-shadow);
+	transition: transform .06s ease;
+}
+
+.mc-button .title {
+	width: 100%; height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	padding-top: .35em;
+	color: var(--ice-light);
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+	font-size: 10pt;
+}
+
+.mc-button:hover {
+	filter: brightness(0.78);
+}
+.mc-button:active {
+	transform: translate(4px, 4px);
+	box-shadow:
+		inset -3px -3px 0 0 rgba(0,0,0,.45),
+		inset 3px 3px 0 0 rgba(0,0,0,.2),
+		0 0 0 0 var(--ice-shadow);
+}
+
+/* Botón de la página actual dentro de la barra de navegación */
+.mc-button.active {
+	border-color: var(--ice-accent);
+	box-shadow:
+		inset 3px 3px 0 0 rgba(255,255,255,.3),
+		inset -3px -3px 0 0 rgba(0,0,0,.45),
+		4px 4px 0 0 var(--ice-accent);
+}
+.mc-button.active .title {
+	color: #FFFFFF;
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+}
+
+/* ===================== HERO / LOGO + IP (solo portada) ===================== */
+.hero {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    width: 100%;
+    padding: 10px 16px 8px;
+}
+
+/* Logo de Skeda Network */
+.logo-frame {
+    width: min(350px, 70vw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-frame img {
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 0 18px rgba(79, 195, 247, .35));
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-user-drag: none;
+	pointer-events: none;
+}
+
+h1.title {
+	font-size: 22pt;
+	line-height: 1.6;
+	padding-top: .3em;
+	letter-spacing: 1px;
+	color: var(--ice-frost);
+	text-shadow: 3px 3px 0 var(--ice-shadow), 6px 6px 0 rgba(1, 12, 22, .5);
+}
+
+.subtitle {
+	max-width: 560px;
+	color: var(--ice-light);
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+	line-height: 1.7;
+	padding-top: .2em;
+}
+
+/* --- IP copiable (mismo diseño 3D que los botones del menú) --- */
+.ip-line {
+	position: relative;
+	font: inherit;
+	font-size: 11pt;
+	line-height: 1.5;
+	color: var(--ice-light);
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+	letter-spacing: .5px;
+	padding: 10px 22px 8px;
+	cursor: pointer;
+
+	background: linear-gradient(180deg, #1c4f78 0%, #123a5c 100%);
+	border: 2px solid var(--ice-primary);
+	box-shadow:
+		inset 3px 3px 0 0 rgba(255,255,255,.25),
+		inset -3px -3px 0 0 rgba(0,0,0,.45),
+		4px 4px 0 0 var(--ice-shadow);
+	transition: transform .06s ease, filter .1s ease;
+}
+.ip-line:hover {
+	filter: brightness(0.8);
+}
+.ip-line:active {
+	transform: translate(4px, 4px);
+	box-shadow:
+		inset -3px -3px 0 0 rgba(0,0,0,.45),
+		inset 3px 3px 0 0 rgba(0,0,0,.2),
+		0 0 0 0 var(--ice-shadow);
+}
+.ip-line .ip-text { display: inline-block; padding-top: .2em; color: var(--ice-accent); }
+.ip-line .ip-hint {
+	display: block;
+	font-size: 7pt;
+	line-height: 1.4;
+	color: var(--ice-light);
+	opacity: .65;
+	margin-top: 4px;
+	letter-spacing: .3px;
+}
+.ip-line.copied {
+	border-color: var(--ice-accent);
+	filter: brightness(1.15);
+}
+
+/* ===================== SECCIONES DE CONTENIDO ===================== */
+.content {
+	position: relative;
+	z-index: 1;
+	width: min(90vw, 780px);
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	padding: 40px 0 60px;
+}
+
+.ice-panel {
+	background: linear-gradient(180deg, rgba(28, 79, 120, .5) 0%, rgba(15, 52, 84, .5) 100%);
+	border: 2px solid var(--ice-primary);
+	box-shadow:
+		inset 3px 3px 0 0 rgba(255,255,255,.12),
+		inset -3px -3px 0 0 rgba(0,0,0,.35),
+		5px 5px 0 0 var(--ice-shadow);
+	padding: 20px 24px;
+	margin: 0 4px 5px 0;
+	position: relative;
+}
+
+.ice-panel h2 {
+	font-size: 13pt;
+	line-height: 1.6;
+	padding-top: .3em;
+	color: var(--ice-accent);
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+	margin-bottom: 12px;
+	letter-spacing: .5px;
+}
+
+.ice-panel p {
+	color: var(--ice-frost);
+	line-height: 1.8;
+	font-size: 10.5pt;
+	opacity: .9;
+}
+
+/* Ice para contactar.html */
+.ice-input {
+	font: inherit;
+	line-height: 1;
+	padding: 14px 12px 6px;
+	background: rgba(7, 27, 46, .6);
+	border: 2px solid var(--ice-primary);
+	color: var(--ice-frost);
+	appearance: none;
+	-webkit-appearance: none;
+	border-radius: 0;
+	width: 100%;
+}
+
+.ice-input::placeholder {
+	color: var(--ice-light);
+	opacity: .55;
+}
+
+input.ice-input {
+	padding: 8px 12px 4px;
+}
+
+/* Scrollbar estilo Minecraft (Chrome, Edge, Safari) */
+.ice-input::-webkit-scrollbar {
+	width: 16px;
+}
+.ice-input::-webkit-scrollbar-track {
+	background: var(--ice-deep);
+	border-left: 2px solid var(--ice-primary);
+}
+.ice-input::-webkit-scrollbar-thumb {
+	background: linear-gradient(180deg, #1c4f78 0%, #123a5c 100%);
+	border: 2px solid var(--ice-primary);
+	box-shadow:
+		inset 2px 2px 0 0 rgba(255,255,255,.25),
+		inset -2px -2px 0 0 rgba(0,0,0,.45);
+}
+.ice-input::-webkit-scrollbar-thumb:hover {
+	filter: brightness(1.15);
+}
+.ice-input::-webkit-scrollbar-button {
+	display: none;
+}
+
+/* Firefox (versión simplificada, no admite bordes/sombras en el thumb) */
+.ice-input {
+	scrollbar-width: auto;
+	scrollbar-color: var(--ice-primary) var(--ice-deep);
+}
+
+/* Separador de reglas.html */
+.ice-divider {
+    border: none;
+    height: 1px;
+    margin: 20px 0;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--ice-primary),
+        transparent
+    );
+    opacity: 0.7;
+}
+
+/* Footer design */
+footer {
+	position: relative;
+	z-index: 1;
+	color: var(--ice-light);
+	opacity: .6;
+	font-size: 8.5pt;
+	line-height: 1.6;
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+	padding: .3em 16px 24px;
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+/* Tablets */
+@media (max-width: 900px) {
+	.mc-menu { gap: 6px; padding: 8px 12px; }
+	.mc-button { height: 28pt; padding: 0 14px; }
+	.mc-button .title { font-size: 9.5pt; }
+	.hero { padding: 36px 16px 8px; gap: 16px; }
+	.logo-frame { width: min(180px, 50vw); }
+	h1.title { font-size: 18pt; }
+	.content { width: min(92vw, 700px); }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+	.mc-menu { gap: 4px; padding: 6px 8px; }
+	.mc-button { height: 30pt; padding: 0 10px; }
+	.mc-button .title { font-size: 8.5pt; }
+	.hero { padding: 28px 12px 4px; gap: 12px; }
+	.logo-frame { width: min(140px, 55vw); }
+	h1.title { font-size: 15pt; }
+	.subtitle { font-size: 9pt; }
+	.ip-line { font-size: 9.5pt; padding: 8px 14px 6px; }
+	.content { width: 94vw; padding: 28px 0 44px; gap: 16px; }
+	.ice-panel { padding: 16px 18px; }
+	.ice-panel h2 { font-size: 11pt; }
+	.ice-panel p { font-size: 9.5pt; }
+}
+
+/* Pantallas grandes */
+@media (min-width: 1400px) {
+	.content { width: min(60vw, 900px); }
+	.hero { padding-top: 64px; }
+	.logo-frame { width: 260px; }
+	h1.title { font-size: 26pt; }
+}

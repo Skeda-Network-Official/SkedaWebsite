@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Skeda Network — Contactar</title>
+	<link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+
+	<!-- Nieve decorativa de fondo -->
+	<div class="snowfall" id="snowfall"></div>
+
+	<!-- ===================== BARRA DE NAVEGACION (arriba) ===================== -->
+	<nav class="mc-menu">
+		<a class="mc-button" href="index.html"><span class="title">Inicio</span></a>
+		<a class="mc-button" href="noticias.html"><span class="title">Noticias</span></a>
+		<a class="mc-button" href="tienda.html"><span class="title">Tienda</span></a>
+		<a class="mc-button" href="reglas.html"><span class="title">Reglas</span></a>
+		<a class="mc-button active" href="contactar.html"><span class="title">Contactar</span></a>
+	</nav>
+
+	<!-- ===================== CONTENIDO ===================== -->
+	<main class="content">
+		<section class="ice-panel">
+			<h2>Contacto directo</h2>
+			<p>La forma más rápida de hablar con nosotros es a través de Discord. También puedes escribirnos por correo.</p>
+
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+				<button class="mc-button" onclick="window.open('https://discord.gg/2PkmN4TcP2', '_blank', 'noopener')">
+					<span class="title">Discord</span>
+				</button>
+				<button class="mc-button" onclick="window.location.href='mailto:skedanetwork@gmail.com'">
+					<span class="title">Email</span>
+				</button>
+			</div>
+		</section>
+
+		<section class="ice-panel">
+			<h2>Formulario</h2>
+			<p style="margin-bottom: 16px;">Rellena esto y se abrirá tu app de correo con el mensaje ya preparado.</p>
+
+			<form id="contact-form" style="display: flex; flex-direction: column; gap: 12px;">
+				<input type="text" id="cf-nombre" class="ice-input" placeholder="Tu nombre" required>
+				<input type="email" id="cf-email" class="ice-input" placeholder="Tu email" required>
+				<textarea id="cf-mensaje" class="ice-input" placeholder="Tu mensaje" required rows="5" style="resize: none; overflow-y: auto;"></textarea>
+				<button type="submit" class="mc-button" style="align-self: flex-start;">
+					<span class="title">Enviar</span>
+				</button>
+			</form>
+		</section>
+	</main>
+
+	<footer>
+		<h4>&copy; 2026 Skeda Network. All rights reserved.</h4>
+		<h6 style="text-align: center;">Not affiliated with Mojang AB.</h6>
+	</footer>
+
+	<script>
+		const field = document.getElementById('snowfall');
+		const TOTAL = 40;
+		for (let i = 0; i < TOTAL; i++) {
+			const flake = document.createElement('span');
+			const left = Math.random() * 100;
+			const duration = 6 + Math.random() * 10;
+			const delay = Math.random() * 10;
+			const size = 2 + Math.random() * 3;
+			flake.style.left = left + 'vw';
+			flake.style.width = flake.style.height = size + 'px';
+			flake.style.animationDuration = duration + 's';
+			flake.style.animationDelay = delay + 's';
+			field.appendChild(flake);
+		}
+	</script>
+
+	<script>
+		// Formulario -> abre el cliente de correo con el mensaje ya escrito
+		const CONTACT_EMAIL = 'skedanetwork@gmail.com';
+
+		document.getElementById('contact-form').addEventListener('submit', (e) => {
+			e.preventDefault();
+
+			const nombre = document.getElementById('cf-nombre').value;
+			const email = document.getElementById('cf-email').value;
+			const mensaje = document.getElementById('cf-mensaje').value;
+
+			const asunto = encodeURIComponent(`Contacto desde la web — ${nombre}`);
+			const cuerpo = encodeURIComponent(`Nombre: ${nombre}\nEmail: ${email}\n\n${mensaje}`);
+
+			window.location.href = `mailto:${CONTACT_EMAIL}?subject=${asunto}&body=${cuerpo}`;
+		});
+	</script>
+</body>
+</html>

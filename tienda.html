@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Skeda Network — Tienda</title>
+	<link rel="stylesheet" href="static/style.css">
+	<!-- Tebex.js: checkout embebido sin salir de la página -->
+	<script defer src="https://js.tebex.io/v/1.js"></script>
+</head>
+<body>
+
+	<!-- Nieve decorativa de fondo -->
+	<div class="snowfall" id="snowfall"></div>
+
+	<!-- ===================== BARRA DE NAVEGACION (arriba) ===================== -->
+	<nav class="mc-menu">
+		<a class="mc-button" href="index.html"><span class="title">Inicio</span></a>
+		<a class="mc-button" href="noticias.html"><span class="title">Noticias</span></a>
+		<a class="mc-button active" href="tienda.html"><span class="title">Tienda</span></a>
+		<a class="mc-button" href="reglas.html"><span class="title">Reglas</span></a>
+		<a class="mc-button" href="contactar.html"><span class="title">Contactar</span></a>
+	</nav>
+
+	<!-- ===================== CONTENIDO ===================== -->
+	<main class="content" id="tienda-content">
+		<section class="ice-panel">
+			<h2>Tienda</h2>
+			<p id="tienda-status">Cargando paquetes…</p>
+		</section>
+	</main>
+
+	<footer>
+		<h4>&copy; 2026 Skeda Network. All rights reserved.</h4>
+		<h6 style="text-align: center;">Not affiliated with Mojang AB.</h6>
+	</footer>
+
+	<script>
+		// ===================== NIEVE DECORATIVA =====================
+		const field = document.getElementById('snowfall');
+		const TOTAL = 40;
+		for (let i = 0; i < TOTAL; i++) {
+			const flake = document.createElement('span');
+			const left = Math.random() * 100;
+			const duration = 6 + Math.random() * 10;
+			const delay = Math.random() * 10;
+			const size = 2 + Math.random() * 3;
+			flake.style.left = left + 'vw';
+			flake.style.width = flake.style.height = size + 'px';
+			flake.style.animationDuration = duration + 's';
+			flake.style.animationDelay = delay + 's';
+			field.appendChild(flake);
+		}
+	</script>
+
+	<script>
+		// ===================== TIENDA — TEBEX HEADLESS API =====================
+		// Identificador público de tu webstore (Panel de Creador de Tebex).
+		// Es seguro exponerlo en el cliente: es de solo lectura para catálogo/checkout.
+		const TEBEX_STORE_TOKEN = '14gkx-24f40e14e690eee5c72bb0ae313b1591dc9757bf';
+		const TEBEX_API = `https://headless.tebex.io/api/accounts/${TEBEX_STORE_TOKEN}`;
+
+		// URLs a las que Tebex redirige tras completar/cancelar el pago.
+		const RETURN_URL = window.location.origin + window.location.pathname + '?compra=ok';
+		const CANCEL_URL = window.location.origin + window.location.pathname + '?compra=cancelada';
+
+		const contentEl = document.getElementById('tienda-content');
+		const statusEl = document.getElementById('tienda-status');
+
+		function stripHtml(html) {
+			const tmp = document.createElement('div');
+			tmp.innerHTML = html || '';
+			return tmp.textContent || tmp.innerText || '';
+		}
+
+		function formatPrice(pkg) {
+			const price = pkg.total_price ?? pkg.base_price ?? 0;
+			const currency = pkg.currency || 'EUR';
+			try {
+				return new Intl.NumberFormat('es-ES', { style: 'currency', currency }).format(price);
+			} catch {
+				return `${price} ${currency}`;
+			}
+		}
+
+		function renderCategories(categories) {
+			contentEl.innerHTML = '';
+
+			if (!categories.length) {
+				const panel = document.createElement('section');
+				panel.className = 'ice-panel';
+				panel.innerHTML = '<h2>Tienda</h2><p>Ahora mismo no hay paquetes disponibles.</p>';
+				contentEl.appendChild(panel);
+				return;
+			}
+
+			categories.forEach(category => {
+				const packages = category.packages || [];
+				if (!packages.length) return;
+
+				const panel = document.createElement('section');
+				panel.className = 'ice-panel';
+
+				const heading = document.createElement('h2');
+				heading.textContent = category.name;
+				panel.appendChild(heading);
+
+				packages.forEach(pkg => {
+					const item = document.createElement('div');
+					item.style.display = 'flex';
+					item.style.justifyContent = 'space-between';
+					item.style.alignItems = 'center';
+					item.style.gap = '16px';
+					item.style.padding = '12px 0';
+					item.style.borderTop = '1px solid rgba(255,255,255,0.12)';
+
+					// --- Imagen del paquete ---
+					if (pkg.image) {
+						const img = document.createElement('img');
+						img.src = pkg.image;
+						img.alt = pkg.name;
+						img.style.width = '72px';
+						img.style.height = '72px';
+						img.style.objectFit = 'cover';
+						img.style.objectPosition = 'center top';
+						img.style.imageRendering = 'pixelated';
+						img.style.border = '2px solid var(--ice-primary)';
+						img.style.boxShadow = '3px 3px 0 0 var(--ice-shadow)';
+						img.style.flexShrink = '0';
+						img.onerror = () => img.remove();
+						item.appendChild(img);
+					}
+
+					const info = document.createElement('div');
+					const name = document.createElement('p');
+					name.style.fontSize = '11pt';
+					name.style.color = 'var(--ice-frost)';
+					name.textContent = pkg.name;
+
+					const desc = document.createElement('p');
+					desc.style.fontSize = '9pt';
+					desc.style.opacity = '.75';
+					desc.textContent = stripHtml(pkg.description).slice(0, 140);
+
+					const price = document.createElement('p');
+					price.style.fontSize = '9pt';
+					price.style.color = 'var(--ice-accent)';
+					price.style.marginTop = '4px';
+					price.textContent = formatPrice(pkg);
+
+					info.append(name, desc, price);
+
+					const buyBtn = document.createElement('button');
+					buyBtn.className = 'mc-button';
+					buyBtn.style.flexShrink = '0';
+					buyBtn.innerHTML = '<span class="title">Comprar</span>';
+					buyBtn.addEventListener('click', () => comprarPaquete(pkg.id, buyBtn));
+
+					item.append(info, buyBtn);
+					panel.appendChild(item);
+				});
+
+				contentEl.appendChild(panel);
+			});
+		}
+
+		async function cargarTienda() {
+			try {
+				const res = await fetch(`${TEBEX_API}/categories?includePackages=1`);
+				if (!res.ok) throw new Error(`HTTP ${res.status}`);
+				const { data } = await res.json();
+				renderCategories(data || []);
+			} catch (err) {
+				console.error('Error cargando la tienda de Tebex:', err);
+				statusEl.textContent = 'No se pudo cargar la tienda. Inténtalo de nuevo más tarde.';
+			}
+		}
+
+		async function comprarPaquete(packageId, buttonEl) {
+			const originalHtml = buttonEl.innerHTML;
+			buttonEl.innerHTML = '<span class="title">…</span>';
+			buttonEl.disabled = true;
+
+			try {
+				// 1. Crear cesta
+				const basketRes = await fetch(`${TEBEX_API}/baskets`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						complete_url: RETURN_URL,
+						cancel_url: CANCEL_URL,
+						complete_auto_redirect: true
+					})
+				});
+				if (!basketRes.ok) throw new Error(`No se pudo crear la cesta (HTTP ${basketRes.status})`);
+				const { data: basket } = await basketRes.json();
+
+				// 2. Añadir el paquete a la cesta
+				const addRes = await fetch(`${TEBEX_API}/baskets/${basket.ident}/packages`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ package_id: packageId, quantity: 1 })
+				});
+				if (!addRes.ok) throw new Error(`No se pudo añadir el paquete (HTTP ${addRes.status})`);
+
+				// 3. Lanzar el checkout embebido de Tebex.js
+				Tebex.checkout.init({ ident: basket.ident, theme: 'dark' });
+				Tebex.checkout.launch();
+
+				Tebex.checkout.on('payment:complete', () => {
+					// El usuario ha completado la compra dentro del popup
+					console.log('Compra completada');
+				});
+			} catch (err) {
+				console.error('Error al iniciar la compra:', err);
+				alert('No se pudo iniciar la compra. Inténtalo de nuevo.');
+			} finally {
+				buttonEl.innerHTML = originalHtml;
+				buttonEl.disabled = false;
+			}
+		}
+
+		cargarTienda();
+	</script>
+</body>
+</html>
