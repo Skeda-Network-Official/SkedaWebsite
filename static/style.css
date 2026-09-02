@@ -44,10 +44,8 @@ button.mc-button .title {
 	--navbar-h: 56px;
 }
 
-/* ================================================================
-   SCROLLBAR GENERAL — SKEDA MINECRAFT ICE
-   ================================================================ */
-
+/* Scrollbar de la web
+Si funciona, funciona xd */
 ::-webkit-scrollbar {
     width: 14px;
 }
