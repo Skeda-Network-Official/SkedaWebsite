@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Skeda Network — Panel de noticias</title>
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<div class="snowfall" id="snowfall"></div>
+
+	<main class="content panel-wrap">
+		<div class="top-bar">
+			<h2>Panel de noticias</h2>
+			<span id="usuario-actual" class="usuario-actual"></span>
+			<form method="POST" action="/auth/logout" style="margin:0;">
+				<button type="submit" class="mc-button btn-sm"><span class="title">Cerrar sesión</span></button>
+			</form>
+		</div>
+
+		<div id="mensaje-area"></div>
+
+		<section class="ice-panel">
+			<h3>Nueva noticia</h3>
+			<form id="form-nueva">
+				<input type="text" id="nuevo-titulo" class="ice-input" placeholder="Título" required>
+				<textarea id="nuevo-contenido" class="ice-input" placeholder="Contenido de la noticia" required></textarea>
+				<button type="submit" class="mc-button"><span class="title">Publicar noticia</span></button>
+			</form>
+		</section>
+
+		<section class="ice-panel">
+			<h3>Noticias publicadas</h3>
+			<div id="lista-noticias"><p>Cargando…</p></div>
+		</section>
+	</main>
+
+	<script>
+		const field = document.getElementById('snowfall');
+		for (let i = 0; i < 40; i++) {
+			const flake = document.createElement('span');
+			flake.style.left = (Math.random() * 100) + 'vw';
+			const size = 2 + Math.random() * 3;
+			flake.style.width = flake.style.height = size + 'px';
+			flake.style.animationDuration = (6 + Math.random() * 10) + 's';
+			flake.style.animationDelay = (Math.random() * 10) + 's';
+			field.appendChild(flake);
+		}
+
+		function escaparHTML(texto) {
+			const div = document.createElement('div');
+			div.textContent = texto;
+			return div.innerHTML;
+		}
+
+		function mostrarMensaje(texto) {
+			const area = document.getElementById('mensaje-area');
+			area.innerHTML = `<p class="mensaje">${escaparHTML(texto)}</p>`;
+			setTimeout(() => { area.innerHTML = ''; }, 3500);
+		}
+
+		async function cargarSesion() {
+			const res = await fetch('/api/sesion');
+			const datos = await res.json();
+			if (datos.usuario) {
+				document.getElementById('usuario-actual').textContent = 'Sesión: ' + datos.usuario.username;
+			}
+		}
+
+		async function cargarNoticias() {
+			const cont = document.getElementById('lista-noticias');
+			const res = await fetch('/api/noticias');
+			const noticias = await res.json();
+
+			if (!noticias.length) {
+				cont.innerHTML = '<p>No hay noticias publicadas todavía.</p>';
+				return;
+			}
+
+			const ordenadas = [...noticias].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+			cont.innerHTML = ordenadas.map(n => `
+				<div class="noticia-admin" data-id="${n.id}">
+					<input type="text" class="ice-input edit-titulo" value="${escaparHTML(n.titulo)}">
+					<textarea class="ice-input edit-contenido">${escaparHTML(n.contenido)}</textarea>
+					<div class="acciones">
+						<button class="mc-button btn-sm btn-guardar"><span class="title">Guardar</span></button>
+						<button class="mc-button btn-sm btn-borrar"><span class="title">Borrar</span></button>
+						<span class="fecha-item">${escaparHTML(n.fecha)}</span>
+					</div>
+				</div>
+			`).join('');
+
+			cont.querySelectorAll('.noticia-admin').forEach(el => {
+				const id = el.dataset.id;
+
+				el.querySelector('.btn-guardar').addEventListener('click', async () => {
+					const titulo = el.querySelector('.edit-titulo').value.trim();
+					const contenido = el.querySelector('.edit-contenido').value.trim();
+					if (!titulo || !contenido) {
+						mostrarMensaje('Título y contenido no pueden estar vacíos.');
+						return;
+					}
+					const res = await fetch('/api/noticias/' + id, {
+						method: 'PUT',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ titulo, contenido }),
+					});
+					if (res.ok) {
+						mostrarMensaje('Noticia actualizada.');
+						cargarNoticias();
+					} else {
+						mostrarMensaje('No se pudo guardar el cambio.');
+					}
+				});
+
+				el.querySelector('.btn-borrar').addEventListener('click', async () => {
+					if (!confirm('¿Borrar esta noticia?')) return;
+					const res = await fetch('/api/noticias/' + id, { method: 'DELETE' });
+					if (res.ok) {
+						mostrarMensaje('Noticia eliminada.');
+						cargarNoticias();
+					} else {
+						mostrarMensaje('No se pudo borrar.');
+					}
+				});
+			});
+		}
+
+		document.getElementById('form-nueva').addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const titulo = document.getElementById('nuevo-titulo').value.trim();
+			const contenido = document.getElementById('nuevo-contenido').value.trim();
+			if (!titulo || !contenido) return;
+
+			const res = await fetch('/api/noticias', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ titulo, contenido }),
+			});
+
+			if (res.ok) {
+				document.getElementById('nuevo-titulo').value = '';
+				document.getElementById('nuevo-contenido').value = '';
+				mostrarMensaje('Noticia publicada.');
+				cargarNoticias();
+			} else {
+				mostrarMensaje('No se pudo publicar la noticia.');
+			}
+		});
+
+		cargarSesion();
+		cargarNoticias();
+	</script>
+</body>
+</html>

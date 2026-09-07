@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Skeda Network — Acceso al panel</title>
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<div class="snowfall" id="snowfall"></div>
+
+	<main class="content">
+		<section class="ice-panel login-box">
+			<h2>Acceso al panel de noticias</h2>
+			<p id="mensaje-error" class="error" style="display:none;"></p>
+			<p>Inicia sesión con tu cuenta de Discord. Solo se te dará acceso si
+			   tienes el rol necesario en el servidor de Skeda Network.</p>
+			<a class="mc-button btn-discord" href="/auth/discord/login">
+				<span class="title">Iniciar sesión con Discord</span>
+			</a>
+		</section>
+	</main>
+
+	<script>
+		const field = document.getElementById('snowfall');
+		for (let i = 0; i < 40; i++) {
+			const flake = document.createElement('span');
+			flake.style.left = (Math.random() * 100) + 'vw';
+			const size = 2 + Math.random() * 3;
+			flake.style.width = flake.style.height = size + 'px';
+			flake.style.animationDuration = (6 + Math.random() * 10) + 's';
+			flake.style.animationDelay = (Math.random() * 10) + 's';
+			field.appendChild(flake);
+		}
+
+		const params = new URLSearchParams(location.search);
+		const error = params.get('error');
+		if (error) {
+			const mensajes = {
+				sin_permiso: 'Tu cuenta de Discord no tiene el rol necesario para acceder al panel.',
+				no_estas_en_el_servidor: 'No se te encuentra en el servidor de Discord de Skeda Network.',
+				sin_codigo: 'No se recibió respuesta de Discord. Inténtalo de nuevo.',
+				fallo_interno: 'Ocurrió un error comprobando tu cuenta. Inténtalo de nuevo más tarde.',
+			};
+			const el = document.getElementById('mensaje-error');
+			el.textContent = mensajes[error] || 'No se pudo iniciar sesión.';
+			el.style.display = 'block';
+		}
+	</script>
+</body>
+</html>

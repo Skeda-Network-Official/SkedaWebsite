@@ -215,6 +215,30 @@ body {
 	text-shadow: 2px 2px 0 var(--ice-shadow);
 }
 
+/* Variante compacta de mc-button para acciones dentro de paneles/formularios */
+.mc-button.btn-sm {
+	height: 26pt;
+	padding: 0 12px;
+}
+.mc-button.btn-sm .title {
+	font-size: 8.5pt;
+	padding-top: .3em;
+}
+
+/* Botón de "Iniciar sesión con Discord" — mismo estilo, un poco más ancho */
+.mc-button.btn-discord {
+	margin-top: 16px;
+	width: 100%;
+	height: 34pt;
+	border-color: #5865F2;
+}
+.mc-button.btn-discord .title {
+	font-size: 9.5pt;
+}
+.mc-button.btn-discord:hover {
+	filter: brightness(0.85);
+}
+
 /* ===================== HERO / LOGO + IP (solo portada) ===================== */
 .hero {
     position: relative;
@@ -342,6 +366,16 @@ h1.title {
 	letter-spacing: .5px;
 }
 
+.ice-panel h3 {
+	font-size: 11pt;
+	line-height: 1.6;
+	padding-top: .3em;
+	color: var(--ice-accent);
+	text-shadow: 2px 2px 0 var(--ice-shadow);
+	margin-bottom: 12px;
+	letter-spacing: .5px;
+}
+
 .ice-panel p {
 	color: var(--ice-frost);
 	line-height: 1.8;
@@ -349,7 +383,7 @@ h1.title {
 	opacity: .9;
 }
 
-/* Ice para contactar.html */
+/* Ice para contactar.html, y reutilizado en inputs/textareas del panel */
 .ice-input {
 	font: inherit;
 	line-height: 1;
@@ -370,6 +404,12 @@ h1.title {
 
 input.ice-input {
 	padding: 8px 12px 4px;
+}
+
+.ice-input:focus {
+	outline: none;
+	border-color: var(--ice-accent);
+	box-shadow: 0 0 0 2px rgba(123, 224, 255, .25);
 }
 
 /* Scrollbar estilo Minecraft (Chrome, Edge, Safari) */
@@ -414,6 +454,85 @@ input.ice-input {
     opacity: 0.7;
 }
 
+/* ===================== Panel de noticias.html ===================== */
+.noticia {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	padding: 12px 0;
+}
+.noticia:last-child {
+	border-bottom: none;
+}
+.noticia h3 {
+	margin: 0 0 4px;
+	color: var(--ice-frost);
+	text-shadow: none;
+}
+.noticia-fecha {
+	font-size: 0.8em;
+	opacity: 0.7;
+	display: block;
+	margin-bottom: 6px;
+}
+
+/* ===================== Panel de administración (admin/panel.html) ===================== */
+.panel-wrap {
+	max-width: 720px;
+	margin: 0 auto;
+}
+.panel-wrap .ice-input,
+.panel-wrap textarea.ice-input {
+	margin-bottom: 10px;
+}
+.panel-wrap textarea.ice-input {
+	min-height: 100px;
+	resize: vertical;
+}
+.noticia-admin {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	padding: 12px 0;
+}
+.noticia-admin .acciones {
+	margin-top: 6px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.mensaje {
+	background: rgba(123, 224, 255, .12);
+	border: 1px solid var(--ice-primary);
+	color: var(--ice-frost);
+	padding: 8px 12px;
+	margin-bottom: 16px;
+	border-radius: 2px;
+	font-size: 9.5pt;
+}
+.top-bar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 20px;
+	flex-wrap: wrap;
+}
+.top-bar h2 { margin-bottom: 0; }
+.usuario-actual {
+	font-size: 8.5pt;
+	opacity: .7;
+	margin-right: auto;
+}
+
+/* Login (login.html) */
+.login-box {
+	max-width: 380px;
+	margin: 60px auto 0;
+	text-align: center;
+}
+.login-box .error {
+	color: #ff6b6b;
+	font-size: 9pt;
+	margin-bottom: 12px;
+}
+
 /* Footer design */
 footer {
 	position: relative;
@@ -424,6 +543,36 @@ footer {
 	line-height: 1.6;
 	text-shadow: 2px 2px 0 var(--ice-shadow);
 	padding: .3em 16px 24px;
+}
+
+/* Error 404 */
+.error-panel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 14px;
+	padding: 48px 24px;
+}
+
+.error-panel .error-code {
+	font-size: 40pt;
+	line-height: 1.2;
+	color: var(--ice-accent);
+	text-shadow: 3px 3px 0 var(--ice-shadow), 6px 6px 0 rgba(1, 12, 22, .5);
+	letter-spacing: 2px;
+}
+
+.error-panel h2 {
+	margin-bottom: 0;
+}
+
+.error-panel p {
+	max-width: 460px;
+}
+
+.error-panel .mc-button {
+	margin-top: 10px;
 }
 
 /* ===================== RESPONSIVE ===================== */
@@ -453,6 +602,8 @@ footer {
 	.ice-panel { padding: 16px 18px; }
 	.ice-panel h2 { font-size: 11pt; }
 	.ice-panel p { font-size: 9.5pt; }
+	.top-bar { flex-direction: column; align-items: flex-start; }
+	.usuario-actual { margin-right: 0; }
 }
 
 /* Pantallas grandes */

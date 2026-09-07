@@ -32,14 +32,12 @@
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="/static/assets/img/SkedaNetwork.png">
 	<link rel="apple-touch-icon" href="/static/assets/img/SkedaNetwork.png">
-	<link rel="stylesheet" href="static/style.css">
+	<link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-	<!-- Nieve decorativa de fondo -->
 	<div class="snowfall" id="snowfall"></div>
 
-	<!-- ===================== BARRA DE NAVEGACION (arriba) ===================== -->
 	<nav class="mc-menu">
 		<a class="mc-button" href="index.html"><span class="title">Inicio</span></a>
 		<a class="mc-button active" href="noticias.html"><span class="title">Noticias</span></a>
@@ -48,11 +46,12 @@
 		<a class="mc-button" href="contactar.html"><span class="title">Contactar</span></a>
 	</nav>
 
-	<!-- ===================== CONTENIDO ===================== -->
 	<main class="content">
 		<section class="ice-panel">
 			<h2>Últimas noticias</h2>
-			<p>Escribe aqui</p>
+			<div id="noticias-lista">
+				<p class="cargando">Cargando noticias...</p>
+			</div>
 		</section>
 	</main>
 
@@ -76,6 +75,46 @@
 			flake.style.animationDelay = delay + 's';
 			field.appendChild(flake);
 		}
+
+		async function cargarNoticias() {
+			const contenedor = document.getElementById('noticias-lista');
+			try {
+				const res = await fetch('/api/noticias');
+				if (!res.ok) throw new Error('Error al cargar noticias: ' + res.status);
+				const noticias = await res.json();
+
+				if (!noticias.length) {
+					contenedor.innerHTML = '<p>Todavía no hay noticias.</p>';
+					return;
+				}
+
+				noticias.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+				contenedor.innerHTML = noticias.map(n => `
+					<article class="noticia">
+						<h3>${escaparHTML(n.titulo)}</h3>
+						<span class="noticia-fecha">${formatearFecha(n.fecha)}</span>
+						<p>${escaparHTML(n.contenido)}</p>
+					</article>
+				`).join('');
+			} catch (err) {
+				contenedor.innerHTML = '<p>No se pudieron cargar las noticias.</p>';
+				console.error(err);
+			}
+		}
+
+		function formatearFecha(fechaISO) {
+			const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+			return new Date(fechaISO).toLocaleDateString('es-ES', opciones);
+		}
+
+		function escaparHTML(texto) {
+			const div = document.createElement('div');
+			div.textContent = texto;
+			return div.innerHTML;
+		}
+
+		cargarNoticias();
 	</script>
 </body>
 </html>

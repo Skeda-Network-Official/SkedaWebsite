@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Skeda Network — Petición incorrecta</title>
+	<meta name="robots" content="noindex, follow">
+	<meta name="description" content="La petición enviada no es válida.">
+	<meta name="theme-color" content="#4FC3F7">
+
+	<link rel="icon" type="image/png" href="/static/assets/img/SkedaNetwork.png">
+	<link rel="apple-touch-icon" href="/static/assets/img/SkedaNetwork.png">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+	<!-- Nieve decorativa de fondo -->
+	<div class="snowfall" id="snowfall"></div>
+
+	<!-- ===================== BARRA DE NAVEGACION (arriba) ===================== -->
+	<nav class="mc-menu">
+		<a class="mc-button" href="/index.html"><span class="title">Inicio</span></a>
+		<a class="mc-button" href="/noticias.html"><span class="title">Noticias</span></a>
+		<a class="mc-button" href="/tienda.html"><span class="title">Tienda</span></a>
+		<a class="mc-button" href="/reglas.html"><span class="title">Reglas</span></a>
+		<a class="mc-button" href="/contactar.html"><span class="title">Contactar</span></a>
+	</nav>
+
+	<!-- ===================== CONTENIDO ===================== -->
+	<main class="content">
+		<section class="ice-panel error-panel">
+			<h1 class="error-code">400</h1>
+			<h2>Comando mal escrito</h2>
+			<p>
+				Algo en lo que enviaste no tiene el formato correcto, como un
+				comando de consola con la sintaxis torcida, revisa los datos e
+				inténtalo de nuevo.
+			</p>
+
+			<a class="mc-button" href="/index.html">
+				<span class="title">Volver al Inicio</span>
+			</a>
+		</section>
+	</main>
+
+	<footer>
+		<h4>&copy; 2026 Skeda Network. All rights reserved.</h4>
+		<h6 style="text-align: center;">Not affiliated with Mojang AB.</h6>
+	</footer>
+
+	<script>
+		const field = document.getElementById('snowfall');
+		const TOTAL = 40;
+		for (let i = 0; i < TOTAL; i++) {
+			const flake = document.createElement('span');
+			const left = Math.random() * 100;
+			const duration = 6 + Math.random() * 10;
+			const delay = Math.random() * 10;
+			const size = 2 + Math.random() * 3;
+			flake.style.left = left + 'vw';
+			flake.style.width = flake.style.height = size + 'px';
+			flake.style.animationDuration = duration + 's';
+			flake.style.animationDelay = delay + 's';
+			field.appendChild(flake);
+		}
+	</script>
+</body>
+</html>
