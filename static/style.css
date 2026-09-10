@@ -17,10 +17,6 @@ button {
 	vertical-align: middle;
 }
 
-button.mc-button .title {
-	padding-top: .6em;
-}
-
 @font-face {
 	font-family: 'Minecraftia';
 	src: url('assets/fonts/Minecraftia.ttf') format('truetype'),
@@ -370,6 +366,7 @@ h1.title {
 	font-size: 11pt;
 	line-height: 1.6;
 	padding-top: .3em;
+	margin-top: 24px;
 	color: var(--ice-accent);
 	text-shadow: 2px 2px 0 var(--ice-shadow);
 	margin-bottom: 12px;
@@ -545,7 +542,7 @@ footer {
 	padding: .3em 16px 24px;
 }
 
-/* Error 404 */
+/* Error 404/400/403/405/500 */
 .error-panel {
 	display: flex;
 	flex-direction: column;
